@@ -1,0 +1,534 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Leonardo - Terminal Portfolio</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Lucide Icons (Substituindo React Icons) -->
+    <script type="module">
+        import { createIcons, icons } from 'https://cdn.jsdelivr.net/npm/lucide-esm@latest';
+        // ANEXANDO AO WINDOW PARA ACESSO GLOBAL
+        window.lucide = { createIcons, icons };
+    </script>
+    <style>
+        /* Define a fonte mono para o terminal */
+        body {
+            font-family: Menlo, Monaco, 'Courier New', monospace;
+        }
+        /* Custom scrollbar para sensação Mac-like */
+        ::-webkit-scrollbar {
+            width: 6px;
+        }
+        ::-webkit-scrollbar-track {
+            background: transparent; 
+        }
+        ::-webkit-scrollbar-thumb {
+            background: rgba(255, 255, 255, 0.2); 
+            border-radius: 10px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: rgba(255, 255, 255, 0.3); 
+        }
+        /* Definição das animações */
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        @keyframes slideUp {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .animate-fadeIn {
+            animation: fadeIn 0.4s ease-out forwards;
+        }
+        .animate-slideUp {
+            animation: slideUp 0.3s ease-out forwards;
+        }
+        .typewriter-cursor {
+            animation: blink 0.7s step-end infinite;
+        }
+        @keyframes blink {
+            from, to { color: transparent }
+            50% { color: inherit }
+        }
+
+        /* Classe de transição para o hover dos botões */
+        .nav-btn {
+            transition: all 0.2s ease-in-out;
+        }
+    </style>
+</head>
+<body class="bg-[#0d1117]">
+    <div id="app" class="min-h-screen p-4 flex items-center justify-center relative">
+        <!-- O conteúdo será injetado aqui pelo JavaScript -->
+    </div>
+
+    <script>
+        // --- Dados Mockados ATUALIZADOS ---
+        const PROFILE = {
+            name: "Leonardo Bombilio Gonçalves",
+            role: "Software Engineer @ NEON",
+            tagline: "Desenvolvedor C#/.NET, GOLANG e Node.js a 10 anos",
+            whatsapp: "5541996871426",
+            linkedin: "www.linkedin.com/in/leonardogoncalvesdevback",
+            github: "https://github.com/leonardogoncalves",
+            portfolio: "https://seu-site.com.br",
+            summary: "Construo Soluções | Desenvolvedor C#/.NET, GOLANG e Node.js a 10 anos | Apaixonado por Fazer o Negocio acontecer com Tecnologia e Soluções Inovadoras. Com sólida experiência em desenvolvimento de software, dominando tecnologias como Node.Js e C#, e com uma rápida capacidade de adaptação e uma visão ampla para enfrentar desafios de qualquer escala."
+        };
+
+        const EXPERIENCES = [
+            {
+                id: 1,
+                role: "Desenvolvedor Back-End SR",
+                company: "Neon",
+                period: "Jul. 2022 - Presente",
+                description: "Atuação no desenvolvimento de soluções financeiras de cartões, utilizando Node.js, .NET Core, Golang. Envolvimento em redesenho de arquitetura monolítica para microsserviços escaláveis, e desenho arquitetural de nova template .NET utilizando modelo hexagonal.",
+                stack: ["Node.js", ".NET Core/7.0", "Golang", "SQL Server", "MongoDB", "Kafka", "DDD", "OpenTelemetry"]
+            },
+            {
+                id: 2,
+                role: "Desenvolvedor .Net SR",
+                company: "Paraná Banco S/A",
+                period: "Abr. 2021 - Jul. 2022",
+                description: "Desenvolvimento de projetos para simplificar soluções bancárias com foco em arquiteturas DDD e Clean Code.",
+                stack: ["SQL Server", "ServiceBus", "Microserviços", "Observabilidade", "OCP (OpenShift)", "DDD"]
+            },
+            {
+                id: 3,
+                role: "Desenvolvedor .Net Pl",
+                company: "PACER",
+                period: "Fev. 2021 - Abr. 2021",
+                description: "Desenvolvimento de aplicação .NET Core 3.1, Entity Framework e MongoDrive. Implementação de testes unitários usando NUnit.",
+                stack: [".NET Core 3.1", "Entity Framework", "MongoDB", "NUnit"]
+            },
+            {
+                id: 4,
+                role: "Desenvolvedor .Net",
+                company: "POLLYSOFT Software",
+                period: "Dez. 2019 - Mar. 2021",
+                description: "Desenvolvimento C#, Vue.js, Entity Framework, .NET core, Angular, Blazor. Atuação em múltiplos projetos e suporte a sistemas legados.",
+                stack: ["C#", "Vue.js", ".NET Core", "Angular", "Blazor", "FULL-REST"]
+            },
+            {
+                id: 5,
+                role: "Desenvolvedor Web Full Stack Laravel e .NET",
+                company: "Congr - Energia Solar",
+                period: "Jan. 2018 - Jan. 2019",
+                description: "Desenvolvimento WEB PHP Laravel, .NET CORE C#, Vue.JS e MySQL em CRMs, além de manutenção de sistemas próprios.",
+                stack: ["PHP Laravel", ".NET CORE C#", "Vue.JS", "MySQL", "CRMs"]
+            },
+            {
+                id: 6,
+                role: "Desenvolvedor Web",
+                company: "3b Energy Consultoria E Engenharia",
+                period: "Jan. 2017 - Jan. 2018",
+                description: "Desenvolvimento em PHP Laravel, JS, Bootstrap, Vue.js MySQL em CRMs em modelo MVC.",
+                stack: ["PHP Laravel", "JS", "Bootstrap", "Vue.js", "MySQL", "MVC"]
+            },
+            {
+                id: 7,
+                role: "Desenvolvedor.NET Full Stack",
+                company: "Ecopysis",
+                period: "Set. 2016 - Dez. 2016",
+                description: "Desenvolvimento C#.net Framework, Sql server, entity framework, focando em sistemas de estoque.",
+                stack: ["C#.NET Framework", "SQL Server", "Entity Framework"]
+            }
+        ];
+
+        // Estado da Aplicação
+        let activeSection = null;
+        let booted = false;
+        let typingInterval = null;
+        let typewriterText = '';
+        let typewriterElement = null;
+        const mojaveImageUrl = 'uploaded:05-mojave03.jpg-13792c34-6dd0-4213-b806-af9ccc315096';
+
+        // --- Funções Auxiliares ---
+
+        function getIcon(name, size = 16, className = '') {
+            // CORREÇÃO: Usa window.lucide explicitamente e adiciona checagem de carregamento.
+            const lucide = window.lucide;
+            const fallbackIcon = `<svg width="${size}" height="${size}" class="${className}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 8v4l3 3"/></svg>`;
+
+            if (!lucide || !lucide.icons || !lucide.icons[name]) {
+                // Retorna um ícone padrão (fallback) se a biblioteca não estiver carregada ou o ícone não existir
+                return fallbackIcon;
+            }
+
+            // O objeto lucide está carregado e tem o ícone.
+            return lucide.icons[name]({ width: size, height: size, class: className }).toString();
+        }
+
+        function typewriter(text, element, speed = 35) {
+            if (typingInterval) clearInterval(typingInterval);
+            if (!element) return;
+
+            typewriterText = text;
+            typewriterElement = element;
+            let i = 0;
+            typewriterElement.innerHTML = ''; 
+
+            typingInterval = setInterval(() => {
+                if (i < typewriterText.length) {
+                    typewriterElement.innerHTML += typewriterText.charAt(i);
+                    i++;
+                } else {
+                    clearInterval(typingInterval);
+                    typewriterElement.innerHTML += `<span class="typewriter-cursor">|</span>`;
+                }
+            }, speed);
+        }
+        
+        function handleNav(section) {
+            activeSection = section;
+            renderApp();
+        }
+
+        function renderContent() {
+            
+            if (!activeSection) {
+                // MENU PRINCIPAL
+                return `
+                    <div class="space-y-2 animate-fadeIn">
+                        <p class="text-gray-500 mb-6 text-sm">Last login: Today on ttys000. Digite um número para navegar:</p>
+                        
+                        <nav class="flex flex-col gap-2" id="nav-menu">
+                            ${[
+                                { id: 'whatsapp', label: 'WhatsApp', icon: 'MessageSquare', num: 1 },
+                                { id: 'linkedin', label: 'LinkedIn', icon: 'Linkedin', num: 2 },
+                                { id: 'github', label: 'GitHub', icon: 'Github', num: 3 },
+                                { id: 'portfolio', label: 'Portfólio', icon: 'Briefcase', num: 4 },
+                                { id: 'experience', label: 'Experiência / Projetos', icon: 'Code', num: 5 }
+                            ].map((item) => `
+                                <button data-section="${item.id}" class="nav-btn group flex items-center p-3 rounded-md hover:bg-white/10 transition-all text-left focus:outline-none focus:ring-1 focus:ring-gray-500 border border-transparent hover:border-white/5">
+                                    <span class="text-blue-400 font-bold mr-4 font-mono">[${item.num}]</span>
+                                    ${getIcon(item.icon, 16, "w-4 h-4 mr-3 text-gray-500 group-hover:text-gray-300 transition-colors")}
+                                    <span class="text-gray-300 group-hover:text-white flex-1 text-sm font-medium tracking-wide">${item.label}</span>
+                                    <span class="text-[10px] text-gray-600 group-hover:text-gray-400 opacity-0 group-hover:opacity-100 transition-opacity font-mono">Run</span>
+                                </button>
+                            `).join('')}
+                        </nav>
+
+                        <div class="mt-12 flex items-center text-sm text-gray-500">
+                            <span class="text-green-400 font-bold mr-2">➜</span>
+                            <span class="text-blue-400 mr-2">~</span>
+                            <span class="animate-pulse bg-gray-500 w-2 h-4 inline-block"></span>
+                        </div>
+                    </div>
+                `;
+            }
+
+            // ÁREA DE CONTEÚDO EXPANDIDA
+            let contentHTML = '';
+
+            switch (activeSection) {
+                case 'whatsapp':
+                    contentHTML = `
+                        <div class="space-y-6 animate-fadeIn">
+                            <div class="border-l-2 border-gray-600 pl-4 mb-4">
+                                <h3 class="text-lg font-bold text-white mb-1">WhatsApp Connection</h3>
+                                <p class="text-gray-400 text-xs">Estabelecendo canal seguro...</p>
+                            </div>
+                            
+                            <div class="bg-white/5 p-6 rounded-lg border border-white/10 text-center backdrop-blur-sm">
+                                <p class="text-base mb-4 text-gray-300">Deseja iniciar uma conversa?</p>
+                                <p class="font-mono text-white text-lg mb-6 tracking-wider">${PROFILE.whatsapp}</p>
+                                <a 
+                                    href="https://wa.me/${PROFILE.whatsapp}"
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                    class="inline-block bg-white hover:bg-gray-200 text-black font-semibold py-2 px-6 rounded-md transition-colors w-full sm:w-auto text-sm shadow-lg"
+                                >
+                                    Iniciar Chat
+                                </a>
+                            </div>
+                        </div>
+                    `;
+                    break;
+                case 'linkedin':
+                    contentHTML = `
+                        <div class="space-y-6 animate-fadeIn">
+                            <div class="border-l-2 border-gray-600 pl-4 mb-4">
+                                <h3 class="text-lg font-bold text-white mb-1">LinkedIn Profile</h3>
+                                <p class="text-gray-400 text-xs">Carregando dados profissionais...</p>
+                            </div>
+
+                            <div class="bg-white/5 p-6 rounded-lg border border-white/10 backdrop-blur-sm">
+                                <div class="flex flex-col sm:flex-row items-center gap-4 mb-6">
+                                    <div class="w-16 h-16 bg-gradient-to-br from-gray-700 to-gray-800 rounded-full flex items-center justify-center border border-white/20 shadow-inner">
+                                        ${getIcon('User', 32, 'text-gray-300')}
+                                    </div>
+                                    <div class="text-center sm:text-left">
+                                        <h4 class="text-xl font-bold text-white tracking-tight">${PROFILE.name}</h4>
+                                        <p class="text-gray-400 text-sm">${PROFILE.role}</p>
+                                    </div>
+                                </div>
+                                
+                                <div class="mb-6">
+                                    <h5 class="text-xs font-semibold uppercase tracking-widest text-gray-500 mb-2">Resumo</h5>
+                                    <p class="text-gray-300 leading-relaxed font-mono text-sm opacity-90">
+                                        ${PROFILE.summary}
+                                    </p>
+                                </div>
+
+                                <a 
+                                    href="https://${PROFILE.linkedin}"
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                    class="block w-full bg-white hover:bg-gray-200 text-black font-semibold py-2 px-6 rounded-md text-center transition-colors text-sm shadow-lg"
+                                >
+                                    Visitar Perfil
+                                </a>
+                            </div>
+                        </div>
+                    `;
+                    break;
+                case 'github':
+                    contentHTML = `
+                        <div class="space-y-6 animate-fadeIn">
+                            <div class="border-l-2 border-gray-600 pl-4 mb-4">
+                                <h3 class="text-lg font-bold text-white mb-1">GitHub Repositories</h3>
+                                <p class="text-gray-400 text-xs">Listando commits e projetos...</p>
+                            </div>
+
+                            <div class="bg-white/5 p-6 rounded-lg border border-white/10 text-center backdrop-blur-sm">
+                                ${getIcon('Github', 40, 'mx-auto text-white mb-4 opacity-90')}
+                                <p class="text-gray-300 mb-6 text-sm">Explore o código fonte, contribuições open-source e projetos pessoais.</p>
+                                
+                                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-6 text-left">
+                                    <div class="bg-black/20 p-3 rounded border border-white/10">
+                                        <span class="text-gray-500 text-[10px] uppercase tracking-wider block">Top Lang</span>
+                                        <span class="text-gray-200 text-sm font-semibold">C# / .NET</span>
+                                    </div>
+                                    <div class="bg-black/20 p-3 rounded border border-white/10">
+                                        <span class="text-gray-500 text-[10px] uppercase tracking-wider block">Focus</span>
+                                        <span class="text-gray-200 text-sm font-semibold">Backend / Arquitetura</span>
+                                    </div>
+                                </div>
+
+                                <a 
+                                    href="${PROFILE.github}"
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                    class="block w-full bg-white hover:bg-gray-200 text-black font-semibold py-2 px-6 rounded-md text-center transition-colors text-sm shadow-lg"
+                                >
+                                    Acessar GitHub
+                                </a>
+                            </div>
+                        </div>
+                    `;
+                    break;
+                case 'portfolio':
+                    contentHTML = `
+                        <div class="space-y-6 animate-fadeIn">
+                            <div class="border-l-2 border-gray-600 pl-4 mb-4">
+                                <h3 class="text-lg font-bold text-white mb-1">Web Portfolio</h3>
+                                <p class="text-gray-400 text-xs">Renderizando preview...</p>
+                            </div>
+                            
+                            <div class="bg-white/5 p-6 rounded-lg border border-white/10 backdrop-blur-sm">
+                                <p class="text-gray-300 mb-6 text-sm leading-relaxed">
+                                    Visualize casos de estudo detalhados, arquiteturas de sistema e demonstrações ao vivo.
+                                </p>
+                                <a 
+                                    href="${PROFILE.portfolio}"
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                    class="block w-full bg-white hover:bg-gray-200 text-black font-semibold py-2 px-6 rounded-md text-center transition-colors text-sm shadow-lg"
+                                >
+                                    Abrir Portfólio
+                                </a>
+                            </div>
+                        </div>
+                    `;
+                    break;
+                case 'experience':
+                    contentHTML = `
+                        <div class="space-y-6 animate-fadeIn pb-4">
+                            <div class="border-l-2 border-gray-600 pl-4 mb-4">
+                                <h3 class="text-lg font-bold text-white mb-1">Work Experience</h3>
+                                <p class="text-gray-400 text-xs">Carregando timeline (/var/log/career)...</p>
+                            </div>
+
+                            <div class="space-y-6">
+                                ${EXPERIENCES.map((exp) => `
+                                    <div class="relative pl-6 border-l border-gray-700 hover:border-gray-500 transition-colors group">
+                                        <div class="absolute -left-1.5 top-1.5 w-3 h-3 bg-[#1a1b26] border border-gray-500 rounded-full group-hover:bg-gray-500 transition-colors"></div>
+                                        <div class="mb-1 flex flex-col sm:flex-row sm:items-center sm:justify-between">
+                                            <h4 class="text-base font-bold text-gray-100">${exp.role}</h4>
+                                            <span class="text-[10px] font-mono text-gray-400 bg-white/10 px-2 py-0.5 rounded">${exp.period}</span>
+                                        </div>
+                                        <div class="text-xs text-gray-500 mb-2 font-mono">@ ${exp.company}</div>
+                                        <p class="text-gray-300 text-sm mb-3 opacity-90">${exp.description}</p>
+                                        <div class="flex flex-wrap gap-2">
+                                            ${exp.stack.map((tech) => `
+                                                <span class="text-[10px] border border-gray-700 text-gray-400 px-2 py-0.5 rounded hover:text-white hover:border-gray-500 transition-colors cursor-default bg-black/20">
+                                                    ${tech}
+                                                </span>
+                                            `).join('')}
+                                        </div>
+                                    </div>
+                                `).join('')}
+                            </div>
+                        </div>
+                    `;
+                    break;
+            }
+
+            // Estrutura de conteúdo com botão Voltar e Prompt
+            return `
+                <div class="min-h-[300px] flex flex-col">
+                    <div class="mb-6 border-b border-gray-700/30 pb-4">
+                        <button id="back-button" class="text-gray-500 hover:text-white transition-colors flex items-center gap-2 text-xs group font-mono">
+                            ${getIcon('ChevronRight', 14, "rotate-180 group-hover:-translate-x-1 transition-transform")}
+                            <span>cd ..</span>
+                        </button>
+                    </div>
+                    
+                    <div class="flex-1 animate-fadeIn">
+                        ${contentHTML}
+                    </div>
+                    
+                    <div class="mt-8 flex items-center text-sm text-gray-500 pt-4 border-t border-gray-700/30">
+                        <span class="text-green-400 font-bold mr-2">➜</span>
+                        <span class="text-blue-400 mr-2">~/${activeSection}</span>
+                        <span class="animate-pulse bg-gray-500 w-2 h-4 inline-block"></span>
+                    </div>
+                </div>
+            `;
+        }
+
+        function attachEventListeners() {
+            // Remove listeners para evitar duplicidade
+            const appContainer = document.getElementById('app');
+            appContainer.removeEventListener('click', handleMenuClick);
+            appContainer.removeEventListener('click', handleBackClick);
+
+            // Adiciona listeners para os botões de navegação
+            appContainer.addEventListener('click', handleMenuClick);
+            
+            // Adiciona listener para o botão de voltar
+            appContainer.addEventListener('click', handleBackClick);
+
+            // Garante que os ícones do Lucide sejam renderizados após o conteúdo ser injetado
+            if (window.lucide && window.lucide.createIcons) {
+                window.lucide.createIcons();
+            }
+        }
+
+        function handleMenuClick(event) {
+            const button = event.target.closest('.nav-btn');
+            if (button) {
+                const section = button.getAttribute('data-section');
+                handleNav(section);
+            }
+        }
+
+        function handleBackClick(event) {
+            const button = event.target.closest('#back-button');
+            if (button) {
+                handleNav(null);
+            }
+        }
+
+        function renderApp() {
+            const app = document.getElementById('app');
+            // Simplificamos a chamada, pois renderContent não precisa mais de activeSection para determinar o conteúdo.
+            const mainContent = renderContent(); 
+
+            const html = `
+                <!-- Dark Overlay for better contrast -->
+                <div class="absolute inset-0 bg-black/40 backdrop-blur-[2px]"></div>
+                <!-- Background Wallpaper (Fundo macOS Mojave) -->
+                <div 
+                    class="absolute inset-0 bg-cover bg-center"
+                    style="background-image: url('${mojaveImageUrl}');"
+                ></div>
+
+                <!-- macOS Terminal Window Container -->
+                <div class="relative w-full max-w-2xl bg-[#1a1b26]/90 backdrop-blur-xl rounded-xl shadow-[0_25px_50px_-12px_rgba(0,0,0,0.7)] border border-white/10 overflow-hidden flex flex-col h-[85vh] sm:h-auto sm:min-h-[600px] transition-all duration-300">
+                    
+                    <!-- macOS Title Bar -->
+                    <div class="bg-gradient-to-b from-[#3a3b46] to-[#2b2c36] px-4 py-3 flex items-center shrink-0 border-b border-black/50 relative select-none">
+                        <!-- Traffic Lights -->
+                        <div class="flex gap-2 absolute left-4 z-10 group">
+                            <div class="w-3 h-3 rounded-full bg-[#ff5f56] border border-[#e0443e] flex items-center justify-center shadow-inner cursor-pointer"></div>
+                            <div class="w-3 h-3 rounded-full bg-[#ffbd2e] border border-[#dea123] flex items-center justify-center shadow-inner cursor-pointer"></div>
+                            <div class="w-3 h-3 rounded-full bg-[#27c93f] border border-[#1aab29] flex items-center justify-center shadow-inner cursor-pointer"></div>
+                        </div>
+
+                        <!-- Centered Title -->
+                        <div class="w-full text-center flex items-center justify-center gap-2 opacity-60">
+                            ${getIcon('Folder', 12, 'text-gray-400')}
+                            <span class="text-gray-300 text-xs font-medium font-sans antialiased shadow-sm">leonardo — -zsh — 80x24</span>
+                        </div>
+                    </div>
+
+                    <!-- Terminal Body -->
+                    <div id="terminal-content" class="p-5 sm:p-8 flex-1 overflow-y-auto">
+                        
+                        <!-- Header Info -->
+                        <header class="mb-10 pb-6 border-b border-gray-700/50">
+                            <div class="text-gray-100 font-bold text-lg sm:text-xl mb-3 tracking-tight flex items-center">
+                                <span class="mr-3 text-green-400 font-bold">➜</span>
+                                <span class="text-blue-400 mr-2">~</span>
+                                <span id="typewriter-output"></span>
+                            </div>
+                            
+                            <div id="boot-info" class="pl-7 ${booted ? 'animate-fadeIn' : 'hidden'}">
+                                <p class="text-gray-400 text-sm italic mb-4 opacity-80">
+                                    "${PROFILE.tagline}"
+                                </p>
+                                <div class="flex flex-wrap gap-x-4 gap-y-1 text-[11px] text-gray-500 font-medium opacity-70">
+                                    <span class="flex items-center gap-1"><span class="w-2 h-2 rounded-full bg-green-500"></span> Online</span>
+                                    <span>•</span>
+                                    <span>Brazil</span>
+                                    <span>•</span>
+                                    <span>zsh 5.8</span>
+                                </div>
+                            </div>
+                        </header>
+
+                        <!-- Main Content Area -->
+                        <main id="main-content" class="${booted ? 'animate-slideUp' : 'hidden'} pl-2 sm:pl-4">
+                            ${mainContent}
+                        </main>
+                    </div>
+                </div>
+            `;
+            app.innerHTML = html;
+            
+            // --- CORREÇÃO: Lógica de Scroll movida para cá, após a injeção do HTML ---
+            const terminalBody = document.getElementById('terminal-content');
+            if (terminalBody) {
+                // Acessa o elemento de forma segura
+                terminalBody.scrollTop = 0; 
+            }
+            
+            // Re-anexa os listeners e renderiza ícones
+            attachEventListeners();
+            
+            // Inicializa o Typewriter se estiver no estado de boot
+            if (!booted) {
+                setTimeout(() => {
+                    booted = true;
+                    document.getElementById('boot-info').classList.remove('hidden');
+                    document.getElementById('main-content').classList.remove('hidden');
+                    typewriter(`whoami: ${PROFILE.name} [${PROFILE.role}]`, document.getElementById('typewriter-output'));
+                    // Re-renderiza para mostrar o menu principal após o Typewriter
+                    setTimeout(renderApp, 2000); 
+                }, 800);
+            } else if (document.getElementById('typewriter-output')) {
+                // Se já deu boot, apenas exibe o texto completo
+                document.getElementById('typewriter-output').innerHTML = `whoami: ${PROFILE.name} [${PROFILE.role}]`;
+                document.getElementById('typewriter-output').innerHTML += `<span class="typewriter-cursor">|</span>`;
+            }
+        }
+
+        // Inicia a aplicação
+        window.onload = renderApp;
+    </script>
+</body>
+</html>
