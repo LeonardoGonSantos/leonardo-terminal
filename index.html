@@ -6,12 +6,6 @@
     <title>Leonardo - Terminal Portfolio</title>
     <!-- Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
-    <!-- Lucide Icons (Substituindo React Icons) -->
-    <script type="module">
-        import { createIcons, icons } from 'https://cdn.jsdelivr.net/npm/lucide-esm@latest';
-        // ANEXANDO AO WINDOW PARA ACESSO GLOBAL
-        window.lucide = { createIcons, icons };
-    </script>
     <style>
         /* Define a fonte mono para o terminal */
         body {
@@ -148,17 +142,19 @@
         // --- Funções Auxiliares ---
 
         function getIcon(name, size = 16, className = '') {
-            // CORREÇÃO: Usa window.lucide explicitamente e adiciona checagem de carregamento.
-            const lucide = window.lucide;
-            const fallbackIcon = `<svg width="${size}" height="${size}" class="${className}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 8v4l3 3"/></svg>`;
-
-            if (!lucide || !lucide.icons || !lucide.icons[name]) {
-                // Retorna um ícone padrão (fallback) se a biblioteca não estiver carregada ou o ícone não existir
-                return fallbackIcon;
-            }
-
-            // O objeto lucide está carregado e tem o ícone.
-            return lucide.icons[name]({ width: size, height: size, class: className }).toString();
+            const icons = {
+                'message-square': `<svg width="${size}" height="${size}" class="${className}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>`,
+                'linkedin': `<svg width="${size}" height="${size}" class="${className}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"/><rect x="2" y="9" width="4" height="12"/><circle cx="4" cy="4" r="2"/></svg>`,
+                'github': `<svg width="${size}" height="${size}" class="${className}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 22v-4a4.8 4.8 0 0 0-1-3.5c3 0 6-2 6-5.5.08-1.25-.27-2.48-1-3.5.28-1.15.28-2.35 0-3.5 0 0-1 0-3 1.5-2.64-.5-5.36-.5-8 0C6 2 5 2 5 2c-.3 1.15-.3 2.35 0 3.5A5.403 5.403 0 0 0 4 9c0 3.5 3 5.5 6 5.5-.39.49-.68 1.05-.85 1.65-.17.6-.22 1.23-.15 1.85v4"/><path d="M9 18c-4.51 2-5-2-7-2"/></svg>`,
+                'briefcase': `<svg width="${size}" height="${size}" class="${className}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="7" width="20" height="14" rx="2" ry="2"/><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/></svg>`,
+                'git-branch': `<svg width="${size}" height="${size}" class="${className}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="6" y1="3" x2="6" y2="15"/><circle cx="18" cy="6" r="3"/><circle cx="6" cy="18" r="3"/><path d="M18 9a9 9 0 0 1-9 9"/></svg>`,
+                'code': `<svg width="${size}" height="${size}" class="${className}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg>`,
+                'user': `<svg width="${size}" height="${size}" class="${className}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>`,
+                'folder': `<svg width="${size}" height="${size}" class="${className}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/></svg>`,
+                'chevron-right': `<svg width="${size}" height="${size}" class="${className}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>`
+            };
+            
+            return icons[name] || `<svg width="${size}" height="${size}" class="${className}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/></svg>`;
         }
 
         function typewriter(text, element, speed = 35) {
@@ -196,11 +192,12 @@
                         
                         <nav class="flex flex-col gap-2" id="nav-menu">
                             ${[
-                                { id: 'whatsapp', label: 'WhatsApp', icon: 'MessageSquare', num: 1 },
-                                { id: 'linkedin', label: 'LinkedIn', icon: 'Linkedin', num: 2 },
-                                { id: 'github', label: 'GitHub', icon: 'Github', num: 3 },
-                                { id: 'portfolio', label: 'Portfólio', icon: 'Briefcase', num: 4 },
-                                { id: 'experience', label: 'Experiência / Projetos', icon: 'Code', num: 5 }
+                                { id: 'whatsapp', label: 'WhatsApp', icon: 'message-square', num: 1 },
+                                { id: 'linkedin', label: 'LinkedIn', icon: 'linkedin', num: 2 },
+                                { id: 'github', label: 'GitHub', icon: 'github', num: 3 },
+                                { id: 'portfolio', label: 'Portfólio', icon: 'briefcase', num: 4 },
+                                { id: 'today-code', label: 'Código Fonte de Hoje', icon: 'git-branch', num: 5 },
+                                { id: 'experience', label: 'Experiência / Projetos', icon: 'code', num: 6 }
                             ].map((item) => `
                                 <button data-section="${item.id}" class="nav-btn group flex items-center p-3 rounded-md hover:bg-white/10 transition-all text-left focus:outline-none focus:ring-1 focus:ring-gray-500 border border-transparent hover:border-white/5">
                                     <span class="text-blue-400 font-bold mr-4 font-mono">[${item.num}]</span>
@@ -258,7 +255,7 @@
                             <div class="bg-white/5 p-6 rounded-lg border border-white/10 backdrop-blur-sm">
                                 <div class="flex flex-col sm:flex-row items-center gap-4 mb-6">
                                     <div class="w-16 h-16 bg-gradient-to-br from-gray-700 to-gray-800 rounded-full flex items-center justify-center border border-white/20 shadow-inner">
-                                        ${getIcon('User', 32, 'text-gray-300')}
+                                        ${getIcon('user', 32, 'text-gray-300')}
                                     </div>
                                     <div class="text-center sm:text-left">
                                         <h4 class="text-xl font-bold text-white tracking-tight">${PROFILE.name}</h4>
@@ -294,7 +291,7 @@
                             </div>
 
                             <div class="bg-white/5 p-6 rounded-lg border border-white/10 text-center backdrop-blur-sm">
-                                ${getIcon('Github', 40, 'mx-auto text-white mb-4 opacity-90')}
+                                ${getIcon('github', 40, 'mx-auto text-white mb-4 opacity-90')}
                                 <p class="text-gray-300 mb-6 text-sm">Explore o código fonte, contribuições open-source e projetos pessoais.</p>
                                 
                                 <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-6 text-left">
@@ -344,6 +341,48 @@
                         </div>
                     `;
                     break;
+                case 'today-code':
+                    contentHTML = `
+                        <div class="space-y-6 animate-fadeIn">
+                            <div class="border-l-2 border-gray-600 pl-4 mb-4">
+                                <h3 class="text-lg font-bold text-white mb-1">Código Fonte de Hoje</h3>
+                                <p class="text-gray-400 text-xs">Projeto apresentado hoje...</p>
+                            </div>
+                            
+                            <div class="bg-white/5 p-6 rounded-lg border border-white/10 backdrop-blur-sm">
+                                <div class="mb-6">
+                                    <h4 class="text-base font-bold text-white mb-3 flex items-center gap-2">
+                                        ${getIcon('git-branch', 20, 'text-green-400')}
+                                        Banking POC - MCP + Observabilidade
+                                    </h4>
+                                    <p class="text-gray-300 text-sm leading-relaxed mb-4">
+                                        POC de API bancária em .NET 8 com observabilidade completa (OpenTelemetry + OpenSearch) e integração com MCP Servers para automação via IA. Permite criar usuários, contas, realizar transferências e consultar saldos, com todos os logs e traces exportados para análise. Demonstra como assistentes de IA podem interagir com APIs e sistemas de observabilidade através do Model Context Protocol.
+                                    </p>
+                                    
+                                    <div class="grid grid-cols-2 gap-3 mb-4">
+                                        <div class="bg-black/30 p-3 rounded border border-white/10">
+                                            <span class="text-gray-500 text-[10px] uppercase tracking-wider block mb-1">Stack</span>
+                                            <span class="text-gray-200 text-xs font-semibold">.NET 8 + OpenTelemetry</span>
+                                        </div>
+                                        <div class="bg-black/30 p-3 rounded border border-white/10">
+                                            <span class="text-gray-500 text-[10px] uppercase tracking-wider block mb-1">Features</span>
+                                            <span class="text-gray-200 text-xs font-semibold">MCP + Observability</span>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <a 
+                                    href="https://github.com/LeonardoGonSantos/banking-poc"
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                    class="block w-full bg-white hover:bg-gray-200 text-black font-semibold py-2 px-6 rounded-md text-center transition-colors text-sm shadow-lg"
+                                >
+                                    Ver Projeto no GitHub
+                                </a>
+                            </div>
+                        </div>
+                    `;
+                    break;
                 case 'experience':
                     contentHTML = `
                         <div class="space-y-6 animate-fadeIn pb-4">
@@ -382,7 +421,7 @@
                 <div class="min-h-[300px] flex flex-col">
                     <div class="mb-6 border-b border-gray-700/30 pb-4">
                         <button id="back-button" class="text-gray-500 hover:text-white transition-colors flex items-center gap-2 text-xs group font-mono">
-                            ${getIcon('ChevronRight', 14, "rotate-180 group-hover:-translate-x-1 transition-transform")}
+                            ${getIcon('chevron-right', 14, "rotate-180 group-hover:-translate-x-1 transition-transform")}
                             <span>cd ..</span>
                         </button>
                     </div>
@@ -411,11 +450,6 @@
             
             // Adiciona listener para o botão de voltar
             appContainer.addEventListener('click', handleBackClick);
-
-            // Garante que os ícones do Lucide sejam renderizados após o conteúdo ser injetado
-            if (window.lucide && window.lucide.createIcons) {
-                window.lucide.createIcons();
-            }
         }
 
         function handleMenuClick(event) {
@@ -461,7 +495,7 @@
 
                         <!-- Centered Title -->
                         <div class="w-full text-center flex items-center justify-center gap-2 opacity-60">
-                            ${getIcon('Folder', 12, 'text-gray-400')}
+                            ${getIcon('folder', 12, 'text-gray-400')}
                             <span class="text-gray-300 text-xs font-medium font-sans antialiased shadow-sm">leonardo — -zsh — 80x24</span>
                         </div>
                     </div>
